@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>學習統計 - English Practice</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap"
+    rel="stylesheet"
+  />
+  <link rel="stylesheet" href="css/reset.css" />
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/layout.css" />
+  <link rel="stylesheet" href="css/components.css" />
+  <link rel="stylesheet" href="css/responsive.css" />
+</head>
+<body data-page-id="statistics">
+  <div class="app-shell">
+    <header class="app-header">
+      <div class="app-header__brand">
+        <a href="index.html" class="app-header__brand-mark" style="text-decoration:none;">EP</a>
+        <span>學習統計</span>
+      </div>
+    </header>
+
+    <main class="app-main">
+      <div class="stack">
+        <div class="stat-grid">
+          <div class="stat-tile">
+            <div class="stat-tile__value" id="statTotal">0</div>
+            <div class="stat-tile__label">累積答題數</div>
+          </div>
+          <div class="stat-tile">
+            <div class="stat-tile__value" id="statOverall">0%</div>
+            <div class="stat-tile__label">累積正確率</div>
+          </div>
+          <div class="stat-tile">
+            <div class="stat-tile__value" id="stat7d">0%</div>
+            <div class="stat-tile__label">近 7 天正確率</div>
+          </div>
+          <div class="stat-tile">
+            <div class="stat-tile__value" id="stat30d">0%</div>
+            <div class="stat-tile__label">近 30 天正確率</div>
+          </div>
+        </div>
+
+        <h2>需要加強的單字</h2>
+        <div id="weakWordList" class="stack stack--tight"></div>
+      </div>
+    </main>
+
+    <nav class="bottom-nav" aria-label="頁面導覽">
+      <a class="bottom-nav__link" data-nav-id="home" href="index.html"><span class="bottom-nav__icon">🏠</span>首頁</a>
+      <a class="bottom-nav__link" data-nav-id="quiz" href="quiz.html"><span class="bottom-nav__icon">📝</span>測驗</a>
+      <a class="bottom-nav__link" data-nav-id="vocab" href="vocab.html"><span class="bottom-nav__icon">📚</span>單字</a>
+      <a class="bottom-nav__link" data-nav-id="statistics" href="statistics.html"><span class="bottom-nav__icon">📊</span>統計</a>
+      <a class="bottom-nav__link" data-nav-id="settings" href="settings.html"><span class="bottom-nav__icon">⚙️</span>設定</a>
+    </nav>
+  </div>
+
+  <script type="module" src="js/app.js"></script>
+  <script type="module">
+    import { statisticsManager } from './js/modules/statisticsManager.js';
+    import { wordManager } from './js/modules/wordManager.js';
+
+    async function init() {
+      const summary = statisticsManager.getSummary();
+      document.getElementById('statTotal').textContent = summary.totalQuestions;
+      document.getElementById('statOverall').textContent = `${summary.overallAccuracy}%`;
+      document.getElementById('stat7d').textContent = `${summary.last7DaysAccuracy}%`;
+      document.getElementById('stat30d').textContent = `${summary.last30DaysAccuracy}%`;
+
+      const weakest = statisticsManager.getWeakestWords(5);
+      const weakWordList = document.getElementById('weakWordList');
+
+      if (weakest.length === 0) {
+        weakWordList.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-state__icon">📈</div>
+            <p>完成第一次測驗後，這裡會顯示需要加強的單字。</p>
+          </div>`;
+        return;
+      }
+
+      const allWords = await wordManager.getAll();
+      weakWordList.innerHTML = '';
+      weakest.forEach((stat) => {
+        const word = allWords.find((w) => w.id === stat.wordId);
+        if (!word) return;
+        const item = document.createElement('div');
+        item.className = 'card list-item';
+        item.innerHTML = `
+          <div>
+            <strong style="font-family: var(--font-display);">${word.word}</strong>
+            <div class="text-muted" style="font-size: var(--text-sm);">${word.meaning}</div>
+          </div>
+          <span class="chip">正確率 ${stat.accuracy}%</span>
+        `;
+        weakWordList.appendChild(item);
+      });
+    }
+
+    init();
+  </script>
+</body>
+</html>

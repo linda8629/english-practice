@@ -1,0 +1,137 @@
+/**
+ * style.css
+ * -----------------------------------------------------------------------
+ * Design tokens (color / type / spacing / motion) and base element
+ * styling. Every other stylesheet should consume these custom
+ * properties rather than hard-coding new values, so the whole app's
+ * look can be re-themed from this one file.
+ *
+ * Concept: "language ticket" — vocabulary presented like boarding
+ * passes / transit tickets, with a dashed perforation, a monospace
+ * phonetic stub, and syllable dots. Deep indigo ink on warm paper,
+ * with a warm amber accent used sparingly for streaks and progress.
+ * -----------------------------------------------------------------------
+ */
+
+:root {
+  /* ---- Color: light theme (default) ---- */
+  --color-bg: #f7f5f0;
+  --color-surface: #ffffff;
+  --color-surface-alt: #eeebe2;
+  --color-ink: #211f3d;
+  --color-ink-muted: #6b6890;
+  --color-primary: #4640de;
+  --color-primary-ink: #ffffff;
+  --color-accent: #ffb648;
+  --color-success: #2fae60;
+  --color-success-bg: #e4f6ea;
+  --color-danger: #e5484d;
+  --color-danger-bg: #fbe7e7;
+  --color-border: #e2ddcf;
+
+  /* ---- Typography ---- */
+  --font-display: 'Sora', 'Noto Sans TC', system-ui, sans-serif;
+  --font-body: 'Inter', 'Noto Sans TC', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', 'SFMono-Regular', Menlo, monospace;
+
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-base: 1rem;
+  --text-lg: 1.125rem;
+  --text-xl: 1.375rem;
+  --text-2xl: 1.75rem;
+  --text-3xl: 2.25rem;
+
+  /* ---- Spacing scale ---- */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+
+  /* ---- Shape / elevation ---- */
+  --radius-sm: 10px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+  --shadow-card: 0 2px 10px rgba(33, 31, 61, 0.06);
+  --shadow-raised: 0 8px 24px rgba(33, 31, 61, 0.12);
+
+  /* ---- Motion ---- */
+  --ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
+  --duration-fast: 150ms;
+  --duration-base: 240ms;
+
+  /* ---- Layout ---- */
+  --max-content-width: 480px;
+  --bottom-nav-height: 64px;
+}
+
+:root[data-theme='dark'] {
+  --color-bg: #14132b;
+  --color-surface: #1e1d3f;
+  --color-surface-alt: #262550;
+  --color-ink: #f4f3fa;
+  --color-ink-muted: #a5a1cf;
+  --color-primary: #7b76f0;
+  --color-primary-ink: #14132b;
+  --color-accent: #ffc568;
+  --color-success: #4bc879;
+  --color-success-bg: #163a26;
+  --color-danger: #f0696d;
+  --color-danger-bg: #3a1c1e;
+  --color-border: #322f5c;
+}
+
+:root[data-font-size='small'] {
+  --text-base: 0.9375rem;
+}
+:root[data-font-size='large'] {
+  --text-base: 1.125rem;
+}
+
+body {
+  font-family: var(--font-body);
+  font-size: var(--text-base);
+  background: var(--color-bg);
+  color: var(--color-ink);
+  transition: background-color var(--duration-base) var(--ease-standard),
+    color var(--duration-base) var(--ease-standard);
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--color-ink);
+}
+
+h1 {
+  font-size: var(--text-3xl);
+}
+h2 {
+  font-size: var(--text-xl);
+}
+h3 {
+  font-size: var(--text-lg);
+}
+
+p {
+  color: var(--color-ink-muted);
+}
+
+.text-muted {
+  color: var(--color-ink-muted);
+}
+
+.font-mono {
+  font-family: var(--font-mono);
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}

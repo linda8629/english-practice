@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>單字庫 - English Practice</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap"
+    rel="stylesheet"
+  />
+  <link rel="stylesheet" href="css/reset.css" />
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/layout.css" />
+  <link rel="stylesheet" href="css/components.css" />
+  <link rel="stylesheet" href="css/responsive.css" />
+  <style>
+    .filter-row {
+      display: flex;
+      gap: var(--space-2);
+      overflow-x: auto;
+      padding-bottom: var(--space-1);
+    }
+    .filter-row select,
+    .search-input {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-sm);
+      padding: var(--space-3);
+    }
+    .search-input {
+      width: 100%;
+    }
+  </style>
+</head>
+<body data-page-id="vocab">
+  <div class="app-shell">
+    <header class="app-header">
+      <div class="app-header__brand">
+        <a href="index.html" class="app-header__brand-mark" style="text-decoration:none;">EP</a>
+        <span>單字庫</span>
+      </div>
+    </header>
+
+    <main class="app-main">
+      <div class="stack">
+        <input id="searchInput" class="search-input" type="search" placeholder="搜尋單字或中文意思..." />
+
+        <div class="filter-row">
+          <select id="levelFilter">
+            <option value="">全部 Level</option>
+          </select>
+          <select id="posFilter">
+            <option value="">全部詞性</option>
+          </select>
+        </div>
+
+        <p class="text-muted" id="resultCount" style="font-size: var(--text-sm);"></p>
+
+        <div id="wordList" class="stack stack--tight"></div>
+      </div>
+    </main>
+
+    <nav class="bottom-nav" aria-label="頁面導覽">
+      <a class="bottom-nav__link" data-nav-id="home" href="index.html"><span class="bottom-nav__icon">🏠</span>首頁</a>
+      <a class="bottom-nav__link" data-nav-id="quiz" href="quiz.html"><span class="bottom-nav__icon">📝</span>測驗</a>
+      <a class="bottom-nav__link" data-nav-id="vocab" href="vocab.html"><span class="bottom-nav__icon">📚</span>單字</a>
+      <a class="bottom-nav__link" data-nav-id="statistics" href="statistics.html"><span class="bottom-nav__icon">📊</span>統計</a>
+      <a class="bottom-nav__link" data-nav-id="settings" href="settings.html"><span class="bottom-nav__icon">⚙️</span>設定</a>
+    </nav>
+  </div>
+
+  <script type="module" src="js/app.js"></script>
+  <script type="module">
+    import { wordManager } from './js/modules/wordManager.js';
+
+    const searchInput = document.getElementById('searchInput');
+    const levelFilter = document.getElementById('levelFilter');
+    const posFilter = document.getElementById('posFilter');
+    const wordList = document.getElementById('wordList');
+    const resultCount = document.getElementById('resultCount');
+
+    let allWords = [];
+
+    function populateFilterOptions() {
+      const levels = [...new Set(allWords.map((w) => w.level))].sort();
+      const partsOfSpeech = [...new Set(allWords.map((w) => w.partOfSpeech))].sort();
+
+      levels.forEach((level) => {
+        const opt = document.createElement('option');
+        opt.value = level;
+        opt.textContent = level;
+        levelFilter.appendChild(opt);
+      });
+
+      partsOfSpeech.forEach((pos) => {
+        const opt = document.createElement('option');
+        opt.value = pos;
+        opt.textContent = pos;
+        posFilter.appendChild(opt);
+      });
+    }
+
+    function renderList() {
+      const search = searchInput.value.trim().toLowerCase();
+      const level = levelFilter.value;
+      const pos = posFilter.value;
+
+      const results = allWords
+        .filter((w) => (level ? w.level === level : true))
+        .filter((w) => (pos ? w.partOfSpeech === pos : true))
+        .filter((w) => (search ? `${w.word} ${w.meaning}`.toLowerCase().includes(search) : true))
+        .sort((a, b) => a.word.localeCompare(b.word));
+
+      resultCount.textContent = `共 ${results.length} 個單字`;
+      wordList.innerHTML = '';
+
+      if (results.length === 0) {
+        wordList.innerHTML = '<div class="empty-state"><div class="empty-state__icon">🔍</div><p>找不到符合的單字</p></div>';
+        return;
+      }
+
+      results.forEach((w) => {
+        const item = document.createElement('div');
+        item.className = 'card list-item';
+        item.innerHTML = `
+          <div>
+            <strong style="font-family: var(--font-display);">${w.word}</strong>
+            <span class="font-mono text-muted" style="font-size: var(--text-xs); margin-left: var(--space-2);">${w.pronunciation}</span>
+            <div class="text-muted" style="font-size: var(--text-sm);">${w.meaning}</div>
+          </div>
+          <span class="chip">${w.level}</span>
+        `;
+        wordList.appendChild(item);
+      });
+    }
+
+    async function init() {
+      allWords = await wordManager.getAll();
+      populateFilterOptions();
+      renderList();
+    }
+
+    searchInput.addEventListener('input', renderList);
+    levelFilter.addEventListener('change', renderList);
+    posFilter.addEventListener('change', renderList);
+
+    init();
+  </script>
+</body>
+</html>

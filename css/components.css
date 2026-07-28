@@ -1,0 +1,324 @@
+/**
+ * components.css
+ * -----------------------------------------------------------------------
+ * Reusable visual components shared across pages: buttons, cards, the
+ * quiz option list, the progress bar, and the "language ticket" chip
+ * used to display a word's pronunciation — the app's signature motif.
+ * -----------------------------------------------------------------------
+ */
+
+/* ---- Buttons ---- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  width: 100%;
+  padding: var(--space-4) var(--space-5);
+  border-radius: var(--radius-md);
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: var(--text-base);
+  transition: transform var(--duration-fast) var(--ease-standard),
+    box-shadow var(--duration-fast) var(--ease-standard),
+    background-color var(--duration-fast) var(--ease-standard);
+}
+
+.btn:active {
+  transform: scale(0.97);
+}
+
+.btn--primary {
+  background: var(--color-primary);
+  color: var(--color-primary-ink);
+  box-shadow: var(--shadow-raised);
+}
+
+.btn--secondary {
+  background: var(--color-surface);
+  color: var(--color-ink);
+  border: 1px solid var(--color-border);
+}
+
+.btn--ghost {
+  background: transparent;
+  color: var(--color-primary);
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+/* ---- Cards ---- */
+.card {
+  background: var(--color-surface);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+  padding: var(--space-5);
+}
+
+.menu-card {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  text-align: left;
+}
+
+.menu-card__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-sm);
+  background: var(--color-surface-alt);
+  font-size: var(--text-lg);
+  flex-shrink: 0;
+}
+
+.menu-card__title {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: var(--text-base);
+}
+
+.menu-card__desc {
+  font-size: var(--text-sm);
+  color: var(--color-ink-muted);
+}
+
+/* ---- "Language ticket" — signature word display ---- */
+.word-ticket {
+  position: relative;
+  background: var(--color-surface);
+  border-radius: var(--radius-lg);
+  padding: var(--space-6) var(--space-5);
+  text-align: center;
+  box-shadow: var(--shadow-card);
+}
+
+.word-ticket::before,
+.word-ticket::after {
+  content: '';
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  background: var(--color-bg);
+  border-radius: 50%;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.word-ticket::before {
+  left: -10px;
+}
+.word-ticket::after {
+  right: -10px;
+}
+
+.word-ticket__word {
+  font-family: var(--font-display);
+  font-size: var(--text-3xl);
+  font-weight: 700;
+}
+
+.word-ticket__phonetic {
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  color: var(--color-primary);
+  margin-top: var(--space-1);
+}
+
+.word-ticket__syllables {
+  display: flex;
+  justify-content: center;
+  gap: var(--space-1);
+  margin-top: var(--space-3);
+}
+
+.word-ticket__syllable-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--color-border);
+}
+
+.word-ticket__divider {
+  border: none;
+  border-top: 1px dashed var(--color-border);
+  margin: var(--space-4) 0;
+}
+
+/* ---- Quiz question ---- */
+.question-stem {
+  font-family: var(--font-display);
+  font-size: var(--text-lg);
+  font-weight: 600;
+  text-align: center;
+  margin-bottom: var(--space-5);
+}
+
+.option-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.option-btn {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  background: var(--color-surface);
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-md);
+  text-align: left;
+  font-size: var(--text-base);
+  transition: border-color var(--duration-fast) var(--ease-standard),
+    background-color var(--duration-fast) var(--ease-standard),
+    transform var(--duration-fast) var(--ease-standard);
+}
+
+.option-btn__label {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--color-surface-alt);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  flex-shrink: 0;
+}
+
+.option-btn:active {
+  transform: scale(0.98);
+}
+
+.option-btn.is-correct {
+  border-color: var(--color-success);
+  background: var(--color-success-bg);
+  animation: pop var(--duration-base) var(--ease-standard);
+}
+
+.option-btn.is-wrong {
+  border-color: var(--color-danger);
+  background: var(--color-danger-bg);
+  animation: shake var(--duration-base) var(--ease-standard);
+}
+
+@keyframes pop {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.03);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-4px);
+  }
+  75% {
+    transform: translateX(4px);
+  }
+}
+
+/* ---- Explanation panel ---- */
+.explanation {
+  margin-top: var(--space-5);
+  padding: var(--space-4);
+  border-radius: var(--radius-md);
+  background: var(--color-surface-alt);
+  font-size: var(--text-sm);
+  white-space: pre-line;
+}
+
+/* ---- Progress bar ---- */
+.progress-bar {
+  height: 6px;
+  border-radius: 999px;
+  background: var(--color-surface-alt);
+  overflow: hidden;
+}
+
+.progress-bar__fill {
+  height: 100%;
+  background: var(--color-primary);
+  border-radius: 999px;
+  transition: width var(--duration-base) var(--ease-standard);
+}
+
+/* ---- Stat tiles ---- */
+.stat-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-3);
+}
+
+.stat-tile {
+  background: var(--color-surface);
+  border-radius: var(--radius-md);
+  padding: var(--space-4);
+  text-align: center;
+}
+
+.stat-tile__value {
+  font-family: var(--font-display);
+  font-size: var(--text-2xl);
+  font-weight: 700;
+  color: var(--color-primary);
+}
+
+.stat-tile__label {
+  font-size: var(--text-xs);
+  color: var(--color-ink-muted);
+  margin-top: var(--space-1);
+}
+
+/* ---- Badge / chip ---- */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: var(--space-1) var(--space-3);
+  border-radius: 999px;
+  background: var(--color-surface-alt);
+  font-size: var(--text-xs);
+  color: var(--color-ink-muted);
+}
+
+.chip--accent {
+  background: color-mix(in srgb, var(--color-accent) 22%, transparent);
+  color: var(--color-ink);
+}
+
+/* ---- List item (word row with trailing chip) ---- */
+.list-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+/* ---- Empty state ---- */
+.empty-state {
+  text-align: center;
+  padding: var(--space-7) var(--space-4);
+  color: var(--color-ink-muted);
+}
+
+.empty-state__icon {
+  font-size: var(--text-3xl);
+  margin-bottom: var(--space-3);
+}
